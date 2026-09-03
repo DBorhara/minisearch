@@ -1,12 +1,11 @@
 package com.minisearch;
 
-import com.minisearch.model.Document;
+import com.minisearch.text.Tokenizer;
 
 public class Main {
   public static void main(String[] args) {
-    Document document = new Document(1, "Java Search", "minisearch is a WIP");
+    Tokenizer tokenizer = new Tokenizer();
 
-    System.out.println(document.getTitle());
-    System.out.println(document.getContent());
+    System.out.println(tokenizer.tokenize("Hello, World! This is java?"));
   }
 }
