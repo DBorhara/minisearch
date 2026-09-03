@@ -1,11 +1,23 @@
 package com.minisearch;
 
-import com.minisearch.text.Tokenizer;
+import com.minisearch.index.InvertedIndex;
+import com.minisearch.model.Document;
 
 public class Main {
   public static void main(String[] args) {
-    Tokenizer tokenizer = new Tokenizer();
+    Document doc1 = new Document(1, "Java Basics", "Java Java programming language");
 
-    System.out.println(tokenizer.tokenize("Hello, World! This is java?"));
+    Document doc2 = new Document(2, "Web Development", "Java TypeScript programming");
+
+    InvertedIndex index = new InvertedIndex();
+
+    index.addDocument(doc1);
+    index.addDocument(doc2);
+
+    System.out.println(index.getPostings("java"));
+
+    System.out.println(index.getPostings("programming"));
+
+    System.out.println(index.getPostings("database"));
   }
 }
