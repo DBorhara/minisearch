@@ -1,23 +1,23 @@
 package com.minisearch;
 
-import com.minisearch.index.InvertedIndex;
 import com.minisearch.model.Document;
+import com.minisearch.search.SearchEngine;
+import java.util.List;
 
 public class Main {
   public static void main(String[] args) {
-    Document doc1 = new Document(1, "Java Basics", "Java Java programming language");
+    SearchEngine searchEngine = new SearchEngine();
 
-    Document doc2 = new Document(2, "Web Development", "Java TypeScript programming");
+    searchEngine.addDocument(new Document(1, "Java Basics", "Java Java programming language"));
 
-    InvertedIndex index = new InvertedIndex();
+    searchEngine.addDocument(new Document(2, "Web Development", "Java TypeScript programming"));
 
-    index.addDocument(doc1);
-    index.addDocument(doc2);
+    searchEngine.addDocument(new Document(3, "Databases", "PostgreSQL relational database"));
 
-    System.out.println(index.getPostings("java"));
+    List<Document> results = searchEngine.search("java programming");
 
-    System.out.println(index.getPostings("programming"));
-
-    System.out.println(index.getPostings("database"));
+    for (Document document : results) {
+      System.out.println(document.getTitle());
+    }
   }
 }
