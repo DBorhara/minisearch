@@ -1,6 +1,7 @@
 package com.minisearch;
 
 import com.minisearch.model.Document;
+import com.minisearch.model.SearchResult;
 import com.minisearch.search.SearchEngine;
 import java.util.List;
 
@@ -14,10 +15,10 @@ public class Main {
 
     searchEngine.addDocument(new Document(3, "Databases", "PostgreSQL relational database"));
 
-    List<Document> results = searchEngine.search("java programming");
+    List<SearchResult> results = searchEngine.search("java programming");
 
-    for (Document document : results) {
-      System.out.println(document.getTitle());
+    for (SearchResult result : results) {
+      System.out.println(result.getDocument().getTitle() + " - score: " + result.getScore());
     }
   }
 }

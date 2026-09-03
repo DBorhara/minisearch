@@ -2,6 +2,7 @@ package com.minisearch.search;
 
 import com.minisearch.index.InvertedIndex;
 import com.minisearch.model.Document;
+import com.minisearch.model.SearchResult;
 import com.minisearch.text.Tokenizer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class SearchEngine {
     index.addDocument(document);
   }
 
-  public List<Document> search(String query) {
+  public List<SearchResult> search(String query) {
     List<String> queryTerms = tokenizer.tokenize(query);
 
     Map<Integer, Integer> scores = new HashMap<>();
@@ -48,12 +49,14 @@ public class SearchEngine {
     // Sort rankings highests to lowest
     ranked.sort(Map.Entry.<Integer, Integer>comparingByValue().reversed());
 
-    List<Document> results = new ArrayList<>();
+    List<SearchResult> results = new ArrayList<>();
 
     for (Map.Entry<Integer, Integer> entry : ranked) {
       Document document = documents.get(entry.getKey());
 
-      results.add(document);
+      SearchResult result = new SearchResult(document, entry.getValue());
+
+      results.add(result);
     }
 
     return results;
