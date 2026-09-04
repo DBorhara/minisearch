@@ -18,7 +18,7 @@ public class Main {
     List<SearchResult> results = searchEngine.search("java programming");
 
     for (SearchResult result : results) {
-      System.out.println(result.getDocument().getTitle() + " - score: " + result.getScore());
+      System.out.printf("%s - score: %.3f%n", result.getDocument().getTitle(), result.getScore());
     }
   }
 }

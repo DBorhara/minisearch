@@ -3,9 +3,9 @@ package com.minisearch.model;
 public class SearchResult {
 
   private final Document document;
-  private final int score;
+  private final double score;
 
-  public SearchResult(Document document, int score) {
+  public SearchResult(Document document, double score) {
     this.document = document;
     this.score = score;
   }
@@ -14,7 +14,7 @@ public class SearchResult {
     return document;
   }
 
-  public int getScore() {
+  public double getScore() {
     return score;
   }
 }

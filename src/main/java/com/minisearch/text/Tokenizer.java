@@ -10,11 +10,11 @@ public class Tokenizer {
 
     String cleanedText = text.toLowerCase().replaceAll("[^a-z0-9\\s]", " ");
 
-    String[] words = cleanedText.split("\\s+");
+    String[] terms = cleanedText.split("\\s+");
 
-    for (String word : words) {
-      if (!word.isBlank()) {
-        tokens.add(word);
+    for (String term : terms) {
+      if (!term.isBlank()) {
+        tokens.add(term);
       }
     }
 
