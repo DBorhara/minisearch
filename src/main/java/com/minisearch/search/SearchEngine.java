@@ -14,6 +14,7 @@ public class SearchEngine {
   private final Tokenizer tokenizer;
   private final Map<Integer, Document> documents;
   private final Ranker ranker;
+  private static final double TITLE_BOOST = 2.0;
 
   public SearchEngine() {
     this.index = new InvertedIndex();
@@ -34,24 +35,34 @@ public class SearchEngine {
     Map<Integer, Double> scores = new HashMap<>();
 
     for (String term : queryTerms) {
-      Map<Integer, Integer> postings = index.getPostings(term);
 
-      for (Map.Entry<Integer, Integer> entry : postings.entrySet()) {
-        int documentId = entry.getKey();
+      Map<Integer, Integer> contentPostings = index.getContentPostings(term);
 
-        int termFrequency = entry.getValue();
+      int contentDocumentFrequency = index.getContentDocumentFrequency(term);
 
-        int documentFrequency = index.getDocumentFrequency(term);
-        // idf = (log(documents.size()+1/documentFrequency+1)+1)
-        // tdIdf = idf * termFrequency
-        double tfIdf = ranker.calculateTfIdf(termFrequency, documentFrequency, documents.size());
-        scores.merge(documentId, tfIdf, Double::sum);
+      for (Map.Entry<Integer, Integer> entry : contentPostings.entrySet()) {
+        double tfIdf =
+            ranker.calculateTfIdf(entry.getValue(), contentDocumentFrequency, documents.size());
+
+        scores.merge(entry.getKey(), tfIdf, Double::sum);
+      }
+
+      Map<Integer, Integer> titlePostings = index.getTitlePostings(term);
+
+      int titleDocumentFrequency = index.getTitleDocumentFrequency(term);
+
+      for (Map.Entry<Integer, Integer> entry : titlePostings.entrySet()) {
+        double tfIdf =
+            ranker.calculateTfIdf(entry.getValue(), titleDocumentFrequency, documents.size());
+
+        double boostedScore = tfIdf * TITLE_BOOST;
+
+        scores.merge(entry.getKey(), boostedScore, Double::sum);
       }
     }
 
     List<Map.Entry<Integer, Double>> ranked = new ArrayList<>(scores.entrySet());
 
-    // Sort rankings highests to lowest
     ranked.sort(Map.Entry.<Integer, Double>comparingByValue().reversed());
 
     List<SearchResult> results = new ArrayList<>();
@@ -59,9 +70,7 @@ public class SearchEngine {
     for (Map.Entry<Integer, Double> entry : ranked) {
       Document document = documents.get(entry.getKey());
 
-      SearchResult result = new SearchResult(document, entry.getValue());
-
-      results.add(result);
+      results.add(new SearchResult(document, entry.getValue()));
     }
 
     return results;

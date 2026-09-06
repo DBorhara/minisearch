@@ -41,4 +41,21 @@ class SearchEngineTest {
 
     assertTrue(results.isEmpty());
   }
+
+  @Test
+  void boostsTitleMatches() {
+    SearchEngine searchEngine = new SearchEngine();
+
+    searchEngine.addDocument(new Document(1, "Java Guide", "Programming basics"));
+
+    searchEngine.addDocument(new Document(2, "Programming Guide", "Java basics"));
+
+    List<SearchResult> results = searchEngine.search("java");
+
+    assertEquals(2, results.size());
+
+    assertEquals(1, results.get(0).getDocument().getId());
+
+    assertTrue(results.get(0).getScore() > results.get(1).getScore());
+  }
 }
