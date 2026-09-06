@@ -1,6 +1,7 @@
 package com.minisearch.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.minisearch.model.Document;
@@ -57,5 +58,27 @@ class SearchEngineTest {
     assertEquals(1, results.get(0).getDocument().getId());
 
     assertTrue(results.get(0).getScore() > results.get(1).getScore());
+  }
+
+  @Test
+  void detectsExactPhrase() {
+    SearchEngine searchEngine = new SearchEngine();
+
+    Document document = new Document(1, "Java", "Java programming language");
+
+    searchEngine.addDocument(document);
+
+    assertTrue(searchEngine.containsPhrase(document, "java programming"));
+  }
+
+  @Test
+  void rejectsWordsThatAreNotAdjacent() {
+    SearchEngine searchEngine = new SearchEngine();
+
+    Document document = new Document(1, "Java", "Java is a programming language");
+
+    searchEngine.addDocument(document);
+
+    assertFalse(searchEngine.containsPhrase(document, "java programming"));
   }
 }

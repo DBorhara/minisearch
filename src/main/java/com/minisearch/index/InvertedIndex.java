@@ -2,17 +2,19 @@ package com.minisearch.index;
 
 import com.minisearch.model.Document;
 import com.minisearch.text.Tokenizer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class InvertedIndex {
-
+  private final Map<String, Map<Integer, List<Integer>>> positionIndex;
   private final Map<String, Map<Integer, Integer>> contentIndex;
   private final Map<String, Map<Integer, Integer>> titleIndex;
   private final Tokenizer tokenizer;
 
   public InvertedIndex() {
+    this.positionIndex = new HashMap<>();
     this.contentIndex = new HashMap<>();
     this.titleIndex = new HashMap<>();
     this.tokenizer = new Tokenizer();
@@ -22,7 +24,15 @@ public class InvertedIndex {
     List<String> contentTokens = tokenizer.tokenize(document.getContent());
 
     List<String> titleTokens = tokenizer.tokenize(document.getTitle());
+    for (int position = 0; position < contentTokens.size(); position++) {
 
+      String token = contentTokens.get(position);
+
+      positionIndex
+          .computeIfAbsent(token, key -> new HashMap<>())
+          .computeIfAbsent(document.getId(), key -> new ArrayList<>())
+          .add(position);
+    }
     addTokens(contentIndex, document.getId(), contentTokens);
 
     addTokens(titleIndex, document.getId(), titleTokens);
@@ -49,5 +59,11 @@ public class InvertedIndex {
 
   public int getTitleDocumentFrequency(String term) {
     return getTitlePostings(term).size();
+  }
+
+  public List<Integer> getPositions(String term, int documentId) {
+    return positionIndex
+        .getOrDefault(term.toLowerCase(), Map.of())
+        .getOrDefault(documentId, List.of());
   }
 }

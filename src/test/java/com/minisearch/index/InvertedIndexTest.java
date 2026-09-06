@@ -3,6 +3,7 @@ package com.minisearch.index;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.minisearch.model.Document;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -65,5 +66,16 @@ class InvertedIndexTest {
     index.addDocument(new Document(3, "Databases", "PostgreSQL database"));
 
     assertEquals(2, index.getTitleDocumentFrequency("java"));
+  }
+
+  @Test
+  void tracksContentPositions() {
+    InvertedIndex index = new InvertedIndex();
+
+    index.addDocument(new Document(1, "Java", "Java Java programming language"));
+
+    assertEquals(List.of(0, 1), index.getPositions("java", 1));
+
+    assertEquals(List.of(2), index.getPositions("programming", 1));
   }
 }

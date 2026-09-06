@@ -75,4 +75,33 @@ public class SearchEngine {
 
     return results;
   }
+
+  public boolean containsPhrase(Document document, String phrase) {
+    List<String> terms = tokenizer.tokenize(phrase);
+
+    if (terms.isEmpty()) {
+      return false;
+    }
+
+    List<Integer> firstPositions = index.getPositions(terms.get(0), document.getId());
+
+    for (int start : firstPositions) {
+      boolean matches = true;
+
+      for (int i = 1; i < terms.size(); i++) {
+        List<Integer> positions = index.getPositions(terms.get(i), document.getId());
+
+        if (!positions.contains(start + i)) {
+          matches = false;
+          break;
+        }
+      }
+
+      if (matches) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
