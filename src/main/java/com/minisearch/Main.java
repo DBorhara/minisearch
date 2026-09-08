@@ -4,6 +4,7 @@ import com.minisearch.io.DocumentLoader;
 import com.minisearch.model.Document;
 import com.minisearch.model.SearchResult;
 import com.minisearch.search.SearchEngine;
+import com.minisearch.search.SnippetGenerator;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
@@ -47,11 +48,18 @@ public class Main {
           continue;
         }
 
+        SnippetGenerator snippetGenerator = new SnippetGenerator();
+
         for (int i = 0; i < results.size(); i++) {
           SearchResult result = results.get(i);
+          Document document = result.getDocument();
+
+          String snippet = snippetGenerator.generate(document, query);
 
           System.out.printf(
-              "%d. %s - score: %.3f%n", i + 1, result.getDocument().getTitle(), result.getScore());
+              "%d. %s - score: %.3f%n", i + 1, document.getTitle(), result.getScore());
+
+          System.out.println("   " + snippet);
         }
       }
     }
