@@ -81,4 +81,21 @@ class SearchEngineTest {
 
     assertFalse(searchEngine.containsPhrase(document, "java programming"));
   }
+
+  @Test
+  void boostsExactPhraseMatches() {
+    SearchEngine searchEngine = new SearchEngine();
+
+    searchEngine.addDocument(new Document(1, "First Document", "Java programming language"));
+
+    searchEngine.addDocument(new Document(2, "Second Document", "Java is a programming language"));
+
+    List<SearchResult> results = searchEngine.search("java programming");
+
+    assertEquals(2, results.size());
+
+    assertEquals(1, results.get(0).getDocument().getId());
+
+    assertTrue(results.get(0).getScore() > results.get(1).getScore());
+  }
 }

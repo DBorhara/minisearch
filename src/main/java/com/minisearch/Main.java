@@ -9,16 +9,15 @@ public class Main {
   public static void main(String[] args) {
     SearchEngine searchEngine = new SearchEngine();
 
-    searchEngine.addDocument(new Document(1, "Java Basics", "Java Java programming language"));
+    searchEngine.addDocument(new Document(1, "Java Tutorial", "Java programming language"));
 
-    searchEngine.addDocument(new Document(2, "Web Development", "Java TypeScript programming"));
-
-    searchEngine.addDocument(new Document(3, "Databases", "PostgreSQL relational database"));
+    searchEngine.addDocument(
+        new Document(2, "Programming Tutorial", "Java is a popular programming language"));
 
     List<SearchResult> results = searchEngine.search("java programming");
 
     for (SearchResult result : results) {
-      System.out.printf("%s - score: %.3f%n", result.getDocument().getTitle(), result.getScore());
+      System.out.printf("%s - %.3f%n", result.getDocument().getTitle(), result.getScore());
     }
   }
 }

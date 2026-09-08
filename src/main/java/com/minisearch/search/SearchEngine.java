@@ -14,7 +14,10 @@ public class SearchEngine {
   private final Tokenizer tokenizer;
   private final Map<Integer, Document> documents;
   private final Ranker ranker;
+  // title boost = score x 2
   private static final double TITLE_BOOST = 2.0;
+  // phrase bonus = score + 2
+  private static final double PHRASE_BONUS = 2.0;
 
   public SearchEngine() {
     this.index = new InvertedIndex();
@@ -29,6 +32,19 @@ public class SearchEngine {
     index.addDocument(document);
   }
 
+  /* Search Flow
+   tokenize query
+       ↓
+  calculate content TF-IDF
+       ↓
+  calculate boosted title TF-IDF
+       ↓
+  check exact phrase
+       ↓
+  add phrase bonus
+       ↓
+  sort
+  */
   public List<SearchResult> search(String query) {
     List<String> queryTerms = tokenizer.tokenize(query);
 
@@ -60,6 +76,16 @@ public class SearchEngine {
         scores.merge(entry.getKey(), boostedScore, Double::sum);
       }
     }
+    // Phrase Scoring
+    if (queryTerms.size() > 1) {
+      for (Integer documentId : scores.keySet()) {
+        Document document = documents.get(documentId);
+
+        if (containsPhrase(document, query)) {
+          scores.merge(documentId, PHRASE_BONUS, Double::sum);
+        }
+      }
+    }
 
     List<Map.Entry<Integer, Double>> ranked = new ArrayList<>(scores.entrySet());
 
@@ -76,6 +102,7 @@ public class SearchEngine {
     return results;
   }
 
+  // Phrase Detection Algorithm
   public boolean containsPhrase(Document document, String phrase) {
     List<String> terms = tokenizer.tokenize(phrase);
 

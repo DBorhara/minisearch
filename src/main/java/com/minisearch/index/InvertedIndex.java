@@ -24,6 +24,8 @@ public class InvertedIndex {
     List<String> contentTokens = tokenizer.tokenize(document.getContent());
 
     List<String> titleTokens = tokenizer.tokenize(document.getTitle());
+
+    // Record position when indexing content
     for (int position = 0; position < contentTokens.size(); position++) {
 
       String token = contentTokens.get(position);
