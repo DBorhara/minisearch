@@ -358,7 +358,7 @@ mvn -version
 ### Clone the Repository
 
 ```bash
-git clone Yhttps://github.com/DBorhara/minisearch.git
+git clone https://github.com/DBorhara/minisearch.git
 cd minisearch
 ```
 
