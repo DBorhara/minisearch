@@ -1,0 +1,2 @@
+PostgreSQL is a relational database management system.
+It supports SQL, transactions, indexes, and advanced database features.
